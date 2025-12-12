@@ -1,0 +1,3 @@
+identifier,asset_type,instruction,eligible_for_bounty,eligible_for_submission,availability_requirement,confidentiality_requirement,integrity_requirement,max_severity,system_tags,created_at,updated_at
+*.roke.co.uk,WILDCARD,,false,true,,,,critical,,2023-08-07 10:37:33 UTC,2023-08-07 10:37:33 UTC
+recruitment.roke.co.uk,URL,,false,false,,,,critical,,2025-07-25 11:50:58 UTC,2025-07-25 11:50:58 UTC

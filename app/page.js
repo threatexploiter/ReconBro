@@ -3,11 +3,28 @@ import { useEffect, useRef, useState } from 'react';
 
 export default function Page() {
   const [messages, setMessages] = useState([
-    { id: 1, from: 'bot', text: 'Hey — I am your ReconBro. Ask me anything.' },
+    { id: 1, from: 'bot', text: 'ReconBro Here' },
   ]);
   const [input, setInput] = useState('');
   const [isSending, setIsSending] = useState(false);
   const scrollRef = useRef(null);
+   const clearChat = () => {
+  setMessages([
+    { id: 1, from: 'bot', text: 'ReconBro Reporting for duty' }
+  ]);
+};
+async function fetchProgramAssets(programUrl) {
+  const res = await fetch('/api/hackerone', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ programUrl })
+  });
+  const j = await res.json();
+  if (!res.ok) throw new Error(j.error || 'failed');
+  return j;
+}
+
+
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -18,20 +35,47 @@ export default function Page() {
   const addMessage = (from, text) => {
     setMessages((m) => [...m, { id: Date.now() + Math.random(), from, text }]);
   };
+ 
 
-  async function handleSend(e) {
-    e?.preventDefault();
-    const text = input.trim();
-    if (!text) return;
-    addMessage('user', text);
-    setInput('');
-    setIsSending(true);
 
-    // Simple mock response (replace with real API call if you want)
-    await new Promise((r) => setTimeout(r, 600));
-    addMessage('bot', `Echo: ${text}`);
+  // inside your handleSend in page.js
+async function handleSend(e) {
+  e?.preventDefault();
+  const text = input.trim();
+  if (!text) return;
+  addMessage('user', text);
+  setInput('');
+  setIsSending(true);
+
+  try {
+    const res = await fetch('/api/assistant', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ message: text })
+    });
+    const j = await res.json();
+    if (!res.ok) {
+      addMessage('bot', `Error: ${j.error || 'assistant failed'}`);
+    } else {
+      // show assistant confirm first
+      if (j.reply) addMessage('bot', j.reply);
+      // if result included details, show summary
+      if (j.result) {
+        let info = '';
+        if (j.result.dir) info += `Folder: ${j.result.dir}\n`;
+        if (j.result.files) info += `Files: ${Object.keys(j.result.files).filter(k => j.result.files[k]).join(', ')}\n`;
+        if (j.result.warnings && j.result.warnings.length) info += `Warnings:\n- ${j.result.warnings.join('\n- ')}`;
+        if (info) addMessage('bot', info);
+      }
+    }
+  } catch (err) {
+    addMessage('bot', `Network error: ${String(err)}`);
+  } finally {
     setIsSending(false);
   }
+}
+
+
 
   function onKeyDown(e) {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -41,18 +85,29 @@ export default function Page() {
   }
 
   return (
-    <div className="cb-chat-wrap">
-      <aside className="cb-sidebar">
-        <h3>Assistant</h3>
-        <p className="muted">Local demo UI — hook up your own backend if needed.</p>
+        <div className="cb-chat-wrap">
+          <aside className="cb-sidebar">
+            <h3>Assistant</h3>
+            <p className="muted">Local demo UI — hook up your own backend if needed.</p>
 
-        <div className="quick-prompts">
-          <button onClick={() => setInput('How do I start with bug bounty?')}>Bug bounty tips</button>
-          <button onClick={() => setInput('Explain CORS vulnerability.')}>CORS explanation</button>
-          <button onClick={() => setInput('Show me a simple recon script in bash.')}>Recon script</button>
-        </div>
+            <div className="quick-prompts">
+      <button onClick={() => setInput('How do I start with bug bounty?')}>
+        Bug bounty tips
+      </button>
+
+      <button onClick={() => setInput('Explain CORS vulnerability.')}>
+        CORS explanation
+      </button>
+
+      <button onClick={() => setInput('Explain me OWASP TOP 10 Vulnerabilities')}>
+        OWASP TOP 10
+      </button>
+
+      <button className="danger-btn" onClick={clearChat}>
+        Clear chat
+      </button>
+    </div>
       </aside>
-
       <section className="cb-chat-column">
         <div className="chat-header">
           <div>
@@ -91,7 +146,7 @@ export default function Page() {
           </div>
         </form>
 
-        <div className="tip muted small">Tip: replace mock response in <code>page.js</code> with your API call.</div>
+        <div className="tip muted small">Only text responses,Doesn't support image creation.</div>
       </section>
     </div>
   );

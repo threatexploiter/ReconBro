@@ -1,0 +1,11 @@
+{
+  "programUrl": "https://hackerone.com/roke_vdp",
+  "createdAt": "2025-12-12T05:32:53.128Z",
+  "files": {
+    "scopeCsv": "C:\\Users\\k3pir\\OneDrive\\Documents\\ProjectAI\\my-app\\hackerone-results\\roke_vdp\\scope.csv",
+    "scopeTxt": "C:\\Users\\k3pir\\OneDrive\\Documents\\ProjectAI\\my-app\\hackerone-results\\roke_vdp\\scope.txt",
+    "roots": "C:\\Users\\k3pir\\OneDrive\\Documents\\ProjectAI\\my-app\\hackerone-results\\roke_vdp\\roots.txt",
+    "burpJson": "C:\\Users\\k3pir\\OneDrive\\Documents\\ProjectAI\\my-app\\hackerone-results\\roke_vdp\\burp.json"
+  },
+  "warnings": []
+}

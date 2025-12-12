@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Header({ theme, toggleTheme }) {
   return (
     <header className="cb-header">
@@ -11,10 +13,8 @@ export default function Header({ theme, toggleTheme }) {
         </div>
 
         <nav className="cb-nav">
-          <a>Home</a>
-          <a>Docs</a>
-          <a>Integrations</a>
-
+          <Link href={"/"}>Home</Link>
+          <Link href={"/docs"}>Docs</Link>
           <button className="theme-toggle" onClick={toggleTheme}>
             {theme === "dark" ? "🌞" : "🌙"}
           </button>
