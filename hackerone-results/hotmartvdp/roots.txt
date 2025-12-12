@@ -1,6 +1,0 @@
-*.buildstaging.com
-*.hotmart.com
-*.teachable.com
-buildstaging.com
-hotmart.com
-teachable.com
