@@ -1,14 +1,16 @@
 export default function Footer() {
-    return(
-        <footer className="w-full border-t bg-white/50 dark:bg-slate-900/80 py-4 mt-6">
-<div className="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center text-sm text-slate-200 font-sembold">
-<div className="mb-2 sm:mb-0">© {new Date().getFullYear()} Chatbot UI — Built with Next.js + Tailwind</div>
-<div className="flex gap-4">
-<a className="hover:underline" href="privacy">Privacy</a>
-<a className="hover:underline" href="/terms">Terms</a>
-<a className="hover:underline" href="https://portfolioshanks.vercel.app/">Contact</a>
-</div>
-</div>
-</footer>
-    );
+  return (
+    <footer className="cb-footer">
+      <div style={{maxWidth:1200, margin:'0 auto', padding:'0 20px', color:'var(--muted)', fontSize:13}}>
+        <div style={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
+          <div>© 2025 Chatbot UI — Built with Next.js + Tailwind</div>
+          <div style={{display:'flex', gap:16}}>
+            <a href="/privacy" style={{color:'var(--muted)'}}>Privacy</a>
+            <a href="/terms" style={{color:'var(--muted)'}}>Terms</a>
+            <a href="/contact" style={{color:'var(--muted)'}}>Contact</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
 }

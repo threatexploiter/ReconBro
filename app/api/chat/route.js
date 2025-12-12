@@ -5,13 +5,11 @@ export async function POST(req) {
   try {
     const { message } = await req.json();
 
-    // Protect: only server-side code uses the API key
     const OPENAI_KEY = process.env.OPENAI_API_KEY;
     if (!OPENAI_KEY) {
       return NextResponse.json({ error: 'No API key configured' }, { status: 500 });
     }
 
-    // Example simple text request (adjust to actual OpenAI endpoint + body)
     const resp = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -19,7 +17,7 @@ export async function POST(req) {
         Authorization: `Bearer ${OPENAI_KEY}`,
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini', // example — use whichever model you have access to
+        model: 'gpt-4o-mini', 
         messages: [{ role: 'user', content: message }],
         max_tokens: 500,
       }),

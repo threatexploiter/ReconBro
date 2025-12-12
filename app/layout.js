@@ -1,4 +1,3 @@
-// app/layout.js
 'use client';
 import './globals.css';
 import { useEffect, useState } from 'react';
@@ -27,7 +26,6 @@ export default function RootLayout({ children }) {
       <body>
         <Header theme={theme} toggleTheme={toggleTheme} />
         <div className="page-wrapper">{children}</div>
-        
         <Footer />
       </body>
     </html>

@@ -203,9 +203,6 @@ TOOLS_DIR=YOUR-TOOLS-DIR
 5. Start the server
 npm run dev
 
-##🧪 Testing
-Check API health:
-GET /api/ping
 
 ### Test asset download:
 POST /api/hackerone

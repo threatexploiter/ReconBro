@@ -1,4 +1,3 @@
-// app/api/assistant/route.js
 import { NextResponse } from "next/server";
 import { fetchHackeroneAssets } from "../../../lib/hackerone.js";
 import { spawn } from 'child_process';
@@ -8,24 +7,35 @@ import path from 'path';
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY || '';
 
 const SYSTEM_PROMPT = `
-You are a JSON-outputting assistant. 
-When given a user's natural message, output ONLY a single JSON object:
+You are a JSON-only assistant used for an automated recon system.
+Always output exactly one JSON object and nothing else.
 
+Output schema:
 {
   "action": "none | start_recon | download_assets",
-  "platform": "hackerone | custom | null",
+  "platform": "hackerone | bugcrowd | intigriti | yeswehack | custom | null",
   "programUrl": "string or null",
   "programName": "string or null",
   "scopeCsvUrl": "string or null",
   "burpConfigUrl": "string or null",
-  "confirm": "short confirmation message"
+  "confirm": "short human-friendly confirmation message"
 }
 
 Rules:
-- If user provides a HackerOne program URL, set action="start_recon", platform="hackerone", and include programUrl.
-- Do NOT describe what you are doing — ONLY output JSON.
-- Never write explanations. JSON only.
+- Accept casual user language. If the user requests recon and provides a program URL, set
+  action = "start_recon" and include programUrl.
+- If the URL is a HackerOne program page, set platform = "hackerone" and extract programName.
+- If the user requests only asset download (burp + csv), set action = "download_assets".
+- If user provides a plain domain or generic URL, set platform = "custom" and action = "start_recon".
+- If the user greets (hello/hi), return action = "none" and confirm with a short greeting.
+- If required information is missing or unclear, return action = "none" and a short confirm that asks for the missing info.
+
+Important:
+- Output ONLY a single valid JSON object. No markdown, no code fences, no extra text.
+- Do not explain anything in the response. Do not include comments in the JSON.
 `;
+
+
 
 async function callOpenAI(userMessage) {
   if (!OPENAI_API_KEY) {
@@ -59,14 +69,7 @@ async function callOpenAI(userMessage) {
   return content;
 }
 
-/**
- * spawnReconScript(scriptPath, targetDir, logDir)
- * - scriptPath: absolute path to Recon.sh
- * - targetDir: absolute path to program dir (where recon should run)
- * - logDir: absolute path where logs will be written
- *
- * Returns: { pid, stdoutLog, stderrLog }
- */
+
 function spawnReconScript(scriptPath, targetDir, logDir) {
   const resolvedScript = path.resolve(scriptPath);
   const resolvedTarget = path.resolve(targetDir);
@@ -135,13 +138,10 @@ export async function POST(req) {
     if (parsed.action === "start_recon" && parsed.platform === "hackerone" && parsed.programUrl) {
       // download assets (this writes files and returns an object)
       const result = await fetchHackeroneAssets(parsed.programUrl);
-
-      // try to spawn Recon.sh (non-blocking) if result.dir exists
       let reconInfo = null;
       try {
         if (result && result.dir) {
-          // adjust this path if your Recon.sh is elsewhere
-          // I saw Recon.sh in your explorer under hackerone-results/Recon.sh — update if different
+      
           const SCRIPT_REL_PATH = path.resolve(process.cwd(), 'hackerone-results', 'Recon.sh');
           const LOG_ROOT = path.resolve(process.cwd(), 'recon-logs');
 

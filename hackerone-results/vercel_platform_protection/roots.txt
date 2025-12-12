@@ -1,0 +1,4 @@
+*.nextjs-cve-hackerone.vercel.app
+*.vercel.app
+nextjs-cve-hackerone.vercel.app
+vercel.app

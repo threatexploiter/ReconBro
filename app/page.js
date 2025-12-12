@@ -38,7 +38,7 @@ async function fetchProgramAssets(programUrl) {
  
 
 
-  // inside your handleSend in page.js
+  
 async function handleSend(e) {
   e?.preventDefault();
   const text = input.trim();
@@ -88,21 +88,12 @@ async function handleSend(e) {
         <div className="cb-chat-wrap">
           <aside className="cb-sidebar">
             <h3>Assistant</h3>
-            <p className="muted">Local demo UI — hook up your own backend if needed.</p>
+            <p className="muted">Usage</p>
 
             <div className="quick-prompts">
       <button onClick={() => setInput('How do I start with bug bounty?')}>
-        Bug bounty tips
+        Do recon on 
       </button>
-
-      <button onClick={() => setInput('Explain CORS vulnerability.')}>
-        CORS explanation
-      </button>
-
-      <button onClick={() => setInput('Explain me OWASP TOP 10 Vulnerabilities')}>
-        OWASP TOP 10
-      </button>
-
       <button className="danger-btn" onClick={clearChat}>
         Clear chat
       </button>
