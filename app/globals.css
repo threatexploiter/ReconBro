@@ -1,0 +1,447 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+:root{
+  --bg:#f6f7fb;
+  --card:#ffffff;
+  --muted:#6b7280;
+  --accent:#5b21b6;
+}
+
+*{box-sizing:border-box}
+html,body,#__next {height:100%}
+body{
+  display:flex;
+  flex-direction: column;
+  margin:0;
+  font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background:var(--bg);
+  color:#0f172a;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* header / footer */
+.cb-header{
+  background:linear-gradient(90deg,#0f0f12,#403e44);
+  color:white;
+  padding:14px 0;
+  box-shadow:0 2px 8px rgba(15,23,42,0.06);
+}
+.cb-container{max-width:1100px;margin:0 auto;padding:0 16px;display:flex;align-items:center;justify-content:space-between}
+.cb-brand{display:flex;gap:12px;align-items:center}
+.cb-logo{width:44px;height:44px;border-radius:8px;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-weight:700}
+.cb-title{font-weight:700}
+.cb-sub{font-size:12px;opacity:0.9}
+.cb-nav a{margin-left:14px;opacity:0.95;cursor:pointer}
+
+/* footer */
+.cb-footer{border-top:1px solid rgba(15,23,42,0.04);background:transparent;padding:14px 0;margin-top:28px}
+.cb-footer-inner{max-width:1100px;margin:0 auto;padding:0 16px;display:flex;justify-content:space-between;align-items:center}
+.cb-footer-links a{margin-left:12px;cursor:pointer}
+
+/* main area */
+.cb-main{min-height:calc(100vh - 140px);padding:24px 16px}
+.cb-chat-wrap{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:300px 1fr;gap:18px;align-items:start}
+
+/* sidebar */
+.cb-sidebar{background:var(--card);padding:16px;border-radius:12px;box-shadow:0 6px 18px rgba(15,23,42,0.04)}
+.cb-sidebar h3{margin:0 0 6px}
+.muted{color:var(--muted)}
+.small{font-size:12px}
+.quick-prompts{margin-top:12px;display:flex;flex-direction:column;gap:8px}
+.quick-prompts button{padding:8px 10px;border-radius:8px;border:1px solid rgba(15,23,42,0.06);background:#fbfbff;cursor:pointer}
+
+/* chat column */
+.cb-chat-column{display:flex;flex-direction:column;background:var(--card);padding:16px;border-radius:12px;box-shadow:0 6px 18px rgba(15,23,42,0.04)}
+.chat-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.chat-title{font-weight:700}
+.chat-window {
+  flex: 1;
+  background: var(--panel);
+  border: 1px solid var(--subtle);
+  padding: 18px;
+  border-radius: 12px;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.bubble-bot {
+  background: var(--card-bg);
+  border: 1px solid var(--subtle);
+  color: var(--text);
+}
+
+.bubble-user {
+  background: linear-gradient(90deg, var(--accent-2), var(--accent));
+  color: white;
+}
+.assistant-card,
+.card {
+  background: var(--panel);
+  border: 1px solid var(--subtle);
+  border-radius: 12px;
+  padding: 16px;
+}
+.composer-input {
+  background: var(--panel);
+  color: var(--text);
+  border: 1px solid var(--subtle);
+}
+
+.btn.ghost {
+  background: transparent;
+  border: 1px solid var(--subtle);
+  color: var(--text);
+}
+.msg {
+  background: transparent;
+}
+
+/* messages */
+.messages{flex:1;min-height:320px;max-height:60vh;overflow:auto;padding:12px;background:linear-gradient(180deg, rgba(0,0,0,0.01), transparent);border-radius:8px}
+.msg-row{display:flex;margin-bottom:10px}
+.msg-user{justify-content:flex-end}
+.msg-bot{justify-content:flex-start}
+.msg-bubble{max-width:75%;padding:10px 12px;border-radius:14px;background:#f3f4f6}
+.msg-user .msg-bubble{background:var(--accent);color:white;border-bottom-right-radius:4px}
+.msg-bot .msg-bubble{background:#f3f4f6;border-bottom-left-radius:4px}
+.msg-text{white-space:pre-wrap}
+
+/* composer */
+.composer{display:flex;gap:12px;margin-top:12px;align-items:flex-end}
+.composer textarea{flex:1;padding:10px;border-radius:10px;border:1px solid rgba(15,23,42,0.06);resize:none;min-height:48px;font-family:inherit}
+.composer-actions{display:flex;gap:8px}
+.composer-actions button{padding:8px 12px;border-radius:8px;border:1px solid rgba(15,23,42,0.06);cursor:pointer}
+.composer-actions button[type="submit"]{background:var(--accent);color:white;border:0}
+.tip{margin-top:8px}
+/* Default DARK theme */
+:root {
+  --bg: #0b1020;
+  --panel: #0f1724;
+  --muted: #9aa4b2;
+  --text: #e6eef8;
+  --subtle: rgba(255,255,255,0.05);
+  --accent: #10b981;
+  --accent-2: #7c3aed;
+}
+
+/* LIGHT theme */
+[data-theme="light"] {
+  --bg: #f5f7fb;
+  --panel: #ffffff;
+  --muted: #6b7280;
+  --text: #0f172a;
+  --subtle: rgba(15,23,42,0.08);
+  --accent: #7c3aed;
+  --accent-2: #5b21b6;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  transition: background .25s ease, color .25s ease;
+}
+
+.theme-toggle {
+  font-size: 20px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+}
+/* ------------------------------------------
+  Theme variables (default: dark)
+   - Switch by setting: <html data-theme="light">
+------------------------------------------- */
+:root{
+  --bg: #0b1020;
+  --panel: #0f1724;
+  --card-bg: rgba(255,255,255,0.02);
+  --muted: #9aa4b2;
+  --text: #e6eef8;
+  --subtle: rgba(255,255,255,0.04);
+  --accent: #10b981;
+  --accent-2: #7c3aed;
+  --glass: rgba(255,255,255,0.03);
+  --radius: 12px;
+  --transition: 220ms ease;
+}
+
+/* Light theme overrides */
+[data-theme="light"] {
+  --bg: #f6f7fb;
+  --panel: #ffffff;
+  --card-bg: rgba(15,23,42,0.02);
+  --muted: #6b7280;
+  --text: #0f172a;
+  --subtle: rgba(15,23,42,0.06);
+  --accent: #16a34a;
+  --accent-2: #6d28d9;
+  --glass: rgba(15,23,42,0.02);
+}
+
+/* Base reset */
+*{box-sizing:border-box}
+html,body,#__next{height:100%}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  -webkit-font-smoothing:antialiased;
+  transition:background var(--transition), color var(--transition);
+}
+
+/* ---------- Layout / wrapper ---------- */
+.cb-chat-wrap {
+  max-width:1600px;            /* wider container like ChatGPT */
+  width:100%;
+  margin:28px auto;
+  display:grid;
+  grid-template-columns:300px 1fr;   /* bigger sidebar, bigger chat */
+  gap:32px;
+  padding:0 32px;
+  align-items:flex-start;
+}
+  
+
+/* Sidebar */
+.cb-sidebar{
+  background:var(--panel);
+  border:1px solid var(--subtle);
+  border-radius:var(--radius);
+  padding:16px;
+  color:var(--text);
+  transition: background var(--transition), border-color var(--transition);
+}
+.cb-sidebar h3{margin:0 0 8px}
+.muted{color:var(--muted)}
+.quick-prompts{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+.quick-prompts button{
+  padding:10px 12px;border-radius:8px;border:1px solid var(--subtle);
+  background:transparent;color:var(--text);cursor:pointer;text-align:left;
+  transition:background var(--transition), transform .12s;
+}
+.quick-prompts button:hover{ background:var(--glass); transform:translateY(-2px); }
+
+/* Chat column */
+.cb-chat-column{
+  display:flex;flex-direction:column;min-height:520px;
+}
+
+/* chat header */
+.chat-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.chat-title{font-weight:700}
+
+/* messages area */
+.messages{
+  flex:1;
+  background:var(--panel);
+  border:1px solid var(--subtle);
+  border-radius:var(--radius);
+  padding:18px;
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+  overflow:auto;
+  transition:background var(--transition), border-color var(--transition);
+}
+
+/* message rows */
+.msg-row{display:flex;align-items:flex-start;gap:10px}
+.msg-user{justify-content:flex-end}
+.msg-bot{justify-content:flex-start}
+
+/* bubble */
+.msg-bubble{
+  max-width:85%;
+  padding:10px 14px;
+  border-radius:12px;
+  line-height:1.4;
+   font-size:15px;
+  white-space:pre-wrap;
+  transition:background var(--transition), color var(--transition);
+}
+
+/* bot bubble (uses subtle card) */
+.msg-bot .msg-bubble{
+  background:var(--card-bg);
+  border:1px solid var(--subtle);
+  color:var(--text);
+}
+
+/* user bubble (accent gradient) */
+.msg-user .msg-bubble{
+  background:linear-gradient(90deg,var(--accent-2),var(--accent));
+  color:white;
+  margin-left:auto;
+  border-bottom-right-radius:6px;
+}
+
+/* composer (textarea + actions) */
+.composer{
+    width:100%;
+  max-width:950px;            /* matches chat width */
+  margin:8px auto 0;
+  display:flex;
+  gap:12px;
+  align-items:flex-end;
+  margin-top:12px;
+}
+.composer textarea{
+  flex:1;
+  width: 100%;
+  min-height:48px;
+  max-height:180px;
+  padding:12px;
+  border-radius:12px;
+  border:1px solid var(--subtle);
+  background:transparent;
+  color:var(--text);
+  resize:none;
+  font-family:inherit;
+  transition:background var(--transition), border-color var(--transition), color var(--transition);
+  outline:none;
+}
+.composer textarea::placeholder{ color:var(--muted); }
+
+/* composer buttons */
+.composer-actions{display:flex;gap:8px;align-items:center}
+.composer-actions button{
+  padding:9px 14px;border-radius:10px;border:0;cursor:pointer;font-weight:600;
+  transition:transform .12s;
+}
+.composer-actions button:active{ transform:translateY(1px); }
+
+.composer-actions button[type="submit"]{
+  background:var(--accent);
+  color:white;
+  box-shadow:0 6px 18px rgba(12,12,12,0.12);
+}
+.composer-actions button[type="button"]{
+  background:transparent;color:var(--text);border:1px solid var(--subtle);
+}
+
+/* small tip text */
+.tip{margin-top:8px;color:var(--muted);font-size:13px}
+
+/* footer card, other cards */
+.card{background:var(--panel);border:1px solid var(--subtle);border-radius:10px;padding:12px}
+
+/* responsive */
+@media (max-width:980px){
+  .cb-chat-wrap{grid-template-columns:1fr;padding:12px}
+  .cb-sidebar{display:none}
+}
+
+/* smooth scroll for messages */
+.messages { scroll-behavior: smooth; }
+
+/* accessibility helper */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+/* 1) Make the outer chat card match theme (dark or light) */
+.cb-chat-column {
+  display:flex;
+  flex-direction:column;
+  width:100%;
+  max-width:950px;            /* WIDE chat area like ChatGPT */
+  margin:0 auto;       
+  background:transparent;       /* center it */
+}
+
+
+/* If you used a card wrapper class around the chat, override it: */
+.chat-card, .chat-window-wrapper {
+  background: var(--panel);      /* panel color for both themes */
+  border: 1px solid var(--subtle);
+  border-radius: var(--radius);
+  padding: 18px;
+  transition: background var(--transition), border-color var(--transition);
+}
+
+/* 2) Ensure messages area (inner) uses panel as well */
+.messages {
+  background: transparent; /* inner area already dark — keep transparent so outer card controls color */
+  border: none;            /* remove double borders */
+  padding: 12px;
+}
+
+/* 3) Make the header inside the card use subtle text (not bright) */
+.chat-header {
+  background: transparent;
+  color: var(--muted);
+}
+
+/* 4) Make composer match the theme and lift Send button a bit */
+.composer {
+  background: transparent;
+  padding-top: 12px;
+  align-items: center;
+}
+.composer textarea {
+  background: rgba(255,255,255,0.02); /* subtle contrasted input in dark mode */
+  border: 1px solid var(--subtle);
+  color: var(--text);
+}
+.composer-actions button[type="submit"]{
+  background: var(--accent);
+  color: #fff;
+  box-shadow: 0 6px 18px rgba(12,12,12,0.12);
+  transform: translateY(0);
+}
+
+/* 5) Tweak bubble styling for clearer contrast */
+.msg-bot .msg-bubble {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.03);
+  color: var(--text);
+}
+.msg-user .msg-bubble {
+  box-shadow: 0 6px 20px rgba(16,185,129,0.08);
+}
+
+/* 6) Remove any hardcoded white backgrounds in these classes */
+.card, .panel, .chat-card {
+  background: var(--panel) !important;
+  border: 1px solid var(--subtle) !important;
+  color: var(--text) !important;
+}
+
+/* 7) Small polish: rounded inner corners and scrollbar color */
+.messages { border-radius: calc(var(--radius) - 4px); }
+.messages::-webkit-scrollbar { height: 10px; width: 10px; }
+.messages::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.04); border-radius: 10px; }
+
+/* Responsive: make sure on small screens the chat card doesn't get white */
+@media (max-width: 980px) {
+  .chat-card, .chat-window-wrapper { background: var(--panel); }
+}
+.page-wrapper {
+  flex: 1;               /* makes this area take the remaining height */
+  display: flex;
+  flex-direction: column;
+}
