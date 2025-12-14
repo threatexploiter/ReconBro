@@ -1,247 +1,101 @@
-# ReconBro — AI-Powered Bug Bounty Recon Automation
+# ReconBro — Bug Bounty Recon Automation
 
-ReconBro is an AI-driven **bug bounty reconnaissance automation system** built using:
+ReconBro is a **local-first bug bounty reconnaissance automation system** designed to streamline scope collection and recon execution across multiple bug bounty platforms.
 
-- **Next.js** (frontend + backend routes)
-- **OpenAI** (AI agent to interpret user instructions)
-- **Recon.sh** (high-performance recon pipeline)
-- **Multi-platform asset scrapers** (HackerOne, Bugcrowd, Intigriti, YesWeHack)
-- **Beautiful ChatGPT-style UI**
+It combines a **Next.js-based interface**, a **lightweight AI intent parser**, **platform-specific scope scrapers**, and a **user-controlled recon pipeline**.
 
-Users simply type:
-
-```Start recon on https://hackerone.com/roke_vdp```
-
-And ReconBro automatically:
-
-1. Detects the bug bounty platform  
-2. Downloads scope assets (CSV/Burp)  
-3. Creates the recon folder  
-4. Executes the Recon.sh pipeline  
-5. Logs progress  
-6. Responds in chat in real-time  
+ReconBro is intended for **local use only** and prioritizes **control, transparency, and safety**.
 
 ---
 
-# 📌 Features
+## Overview
 
-### 🔥 1. AI Assistant (OpenAI-powered)
-- Converts natural language → structured JSON → automated actions  
-- No buttons or forms needed  
-- Handles:
-  - Starting recon  
-  - Fetching assets  
-  - Clarifying missing info  
-  - Detecting platform from URL  
+ReconBro allows users to interact via a chat-style interface to:
 
----
+- Provide one or more program URLs
+- Automatically extract in-scope assets
+- Organize targets into structured files
+- Trigger reconnaissance manually when ready
 
-### 🌐 2. Multi-Platform Support
-| Platform | Automatic Scope Download | AI HTML Extraction | Status |
-|---------|----------------------------|--------------------|--------|
-| **HackerOne** | ✔ CSV + Burp config | Optional | **Fully supported** |
-| **Bugcrowd** | ❌ No downloads | ✔ AI extraction | Planned |
-| **Intigriti** | ❌ No downloads | ✔ AI extraction | Planned |
-| **YesWeHack** | ❌ No downloads | ✔ AI extraction | Planned |
+Scraping and recon execution are intentionally separated to avoid unsafe automation.
 
 ---
 
-### 🔧 3. Automated Recon Engine
-Your provided **Recon.sh** is integrated directly.
+## Key Capabilities
 
-Pipeline includes:
+- AI-assisted intent parsing (no execution logic in AI)
+- Multi-platform scope scraping
+- Clean target categorization
+- Manual recon execution control
+- Background job tracking
+- Compatible with custom recon pipelines
+---
 
-- Subdomain enumeration  
-- Port scanning  
-- HTTPX discovery  
-- Parameter spidering  
-- CORS/special payload scans  
-- Nuclei with custom templates  
-- Discord webhook notifications  
-- Massive directory and output management  
+## Supported Platforms
 
-All triggered automatically from chat.
+| Platform     | Scope Method                  | Status |
+|-------------|-------------------------------|--------|
+| HackerOne   | CSV and Burp asset download   | Stable |
+| Bugcrowd    | HTML scope scraping           | Stable |
+| Intigriti   | Assets table scraping         | Stable |
+| YesWeHack   | Scope section scraping        | Stable |
 
 ---
 
-### 💾 4. Program Folder Structure
+## Scope Output Structure
 
-When user starts recon on a program:
+Each program is stored in an isolated directory under `output/`:
+
+### Installation 
+#### Windows
+- clone the repository 
+- install all the required dependencies
+- get your OPENAI API KEY
+- make a new .env.local file and put your OPENAI api key in there
+- start the server
 ```
-hackerone-results/
-└── roke_vdp/
-├── burp.json
-├── scope.csv
-├── roots.txt
-├── scope.txt
-├── urls.txt
-└── Recon.sh (copied or executed from main)
-```
-
----
-
-### 📟 5. Script Execution with Logging
-
-ReconBro spawns Recon.sh safely:
-
-bash Recon.sh program_directory
-
-
-Outputs go to:
-
-
-```
-recon-logs/
-recon-YYYY-MM-DD-HH-MM.out.log
-recon-YYYY-MM-DD-HH-MM.err.log
-```
-
----
-
-# 📁 Project Structure
-
-
-```
-my-app/
-│
-├── app/
-│ ├── page.js # Chat UI
-│ ├── layout.js # Global layout
-│ ├── api/
-│ │ ├── assistant/
-│ │ │ └── route.js # AI engine + recon execution
-│ │ ├── ping/route.js # Health check
-│ │ └── hackerone/route.js # Standalone asset fetcher
-│ │
-│ ├── components/
-│ │ ├── Header.js
-│ │ └── Footer.js
-│ │
-│ ├── docs/page.js
-│ ├── privacy/page.js
-│ └── terms/page.js
-│
-├── lib/
-│ ├── hackerone.js # CSV/Burp downloader
-│ ├── platforms.js # Multi-platform universal scrapers
-│ ├── ai-scraper.js # HTML → AI → Scope parser
-│
-├── hackerone-results/ # Programs + assets + recon data
-│ ├── Recon.sh # Recon pipeline
-│ └── <program>/
-│
-├── recon-logs/ # Log output for all recon tasks
-│
-└── README.md
-```
-
----
-
-# ⚙️ How It Works (Technical)
-
-### 1️⃣ User sends message  
-Example:
-
-
-Start recon on https://hackerone.com/roke_vdp
-
-
-### 2️⃣ Assistant route sends system prompt → OpenAI  
-The system prompt forces the model to return ONLY JSON:
-
-```json
-{
-  "action": "start_recon",
-  "platform": "hackerone",
-  "programUrl": "https://hackerone.com/roke_vdp",
-  "programName": "roke_vdp",
-  "confirm": "Starting recon for roke_vdp..."
-}
-
-3️⃣ Backend executes action
-
-If:
-
-action = start_recon
-platform = hackerone
-
-
-Steps executed:
-
-fetchHackeroneAssets(programUrl)
-
-Create folder:
-
-hackerone-results/<program>/
-
-
-Copy or call Recon.sh:
-
-bash Recon.sh hackerone-results/<program>
-
-
-Return JSON response to frontend.
-```
-## 🔌 Setup Instructions
-1. Install dependencies
-npm install
-
-2. Add environment variable
-
-Create .env.local:
-```
-OPENAI_API_KEY=YOUR_KEY_HERE
-```
-3. Make Recon.sh executable
-chmod +x hackerone-results/Recon.sh
-4. Modify Recon.sh as per ur needs add your discord webhook 
-```
-WEBHOOK_URL="YOUR-WEBHOOK" 
-TOOLS_DIR=YOUR-TOOLS-DIR
-```
-
-5. Start the server
 npm run dev
-
-
-### Test asset download:
-POST /api/hackerone
-{
-  "programUrl": "https://hackerone.com/roke_vdp"
-}
-
-Test through chat:
-
-Enter in UI:
+npm install
 ```
-start recon on https://hackerone.com/roke_vdp
+- In the ui enter do recon on program_url
+### note in windows it can only scrape it cannot run recon.sh
+#### Linux - (made for linux)
+- clone the repository 
 ```
-### 🔐 Security Notes
+https://github.com/threatexploiter/ReconBro.git
+cd ReconBro
+```
+- install all the required dependencies
+- get your OPENAI API KEY
+- make a new .env.local file and put your OPENAI api key in there
+- start the server
+```
+npm run dev
+npm install
+```
+- In the ui enter do recon on program_url
+- All of the output of scopes will be in the output/ or hackerone-results directory 
 
-### ⚠ Do NOT expose ReconBro to the public internet without authentication.
-Recon.sh executes local commands
-Program folders are writable
-Avoid running as root
-Validate all inputs before allowing execution
 
-### Roadmap
-- Real-time recon log streaming to UI
-- Full platform support (Bugcrowd, Intigriti, YesWeHack)
-- Dashboard of completed recon jobs
-- PDF summary reports
-- Multi-user authentication
-- Docker version
+### Example usage
+```
+start recon on https://app.intigriti.com/programs/dropbox/dropbox/detail
+```
 
-### Open to Contributing!!!
+## Environment configuration
+### Create .env.local:
+```
+OPENAI_API_KEY=your_api_key_here
+```
+### Recon script permissions
+```
+chmod +x output/Recon.sh
+```
+### Start the application
+```
+npm run dev
+```
 
-Contributions are welcome!
-You can help improve:
-- Recon engine
-- AI parsing
-- Platform scrapers
-- UI/UX
-- Templates
-- Documentation
-Just open a pull request.
-
-Author - @threatexploiter
+## Change Recon.sh file
+- Add your discord webhook
+- Add your own tools directory 
