@@ -1,0 +1,9 @@
+*.allin.movilepay.com
+*.dash.zoop.com.br
+*.ecomanda.app
+*.ecomanda.com.br
+*.movilepay.com
+*.movilepay.com.br
+*.starsoft.movilepay.com
+*.zoop.com.br
+*.zoop.ws

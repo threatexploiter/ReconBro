@@ -1,52 +1,39 @@
 import { NextResponse } from "next/server";
-import { fetchHackeroneAssets } from "../../../lib/hackerone.js";
-import { spawn } from 'child_process';
-import fs from 'fs';
-import path from 'path';
 
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY || '';
-
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const SYSTEM_PROMPT = `
-You are a JSON-only assistant used for an automated recon system.
-Always output exactly one JSON object and nothing else.
+You are a JSON-only assistant for an automated recon system.
 
-Output schema:
+Your role is ONLY to decide whether to start recon.
+
+Output exactly one JSON object.
+
+Schema:
 {
-  "action": "none | start_recon | download_assets",
-  "platform": "hackerone | bugcrowd | intigriti | yeswehack | custom | null",
-  "programUrl": "string or null",
-  "programName": "string or null",
-  "scopeCsvUrl": "string or null",
-  "burpConfigUrl": "string or null",
+  "action": "none | start_recon",
+  "targets": ["array of URLs or domains"],
   "confirm": "short human-friendly confirmation message"
 }
 
 Rules:
-- Accept casual user language. If the user requests recon and provides a program URL, set
-  action = "start_recon" and include programUrl.
-- If the URL is a HackerOne program page, set platform = "hackerone" and extract programName.
-- If the user requests only asset download (burp + csv), set action = "download_assets".
-- If user provides a plain domain or generic URL, set platform = "custom" and action = "start_recon".
-- If the user greets (hello/hi), return action = "none" and confirm with a short greeting.
-- If required information is missing or unclear, return action = "none" and a short confirm that asks for the missing info.
+- If the user provides one or more URLs or domains, set action = "start_recon" and include them in targets.
+- Accept multiple URLs separated by spaces or newlines.
+- If the user greets, return action = "none" with a greeting.
+- If input is unclear, return action = "none" and ask for clarification.
 
 Important:
-- Output ONLY a single valid JSON object. No markdown, no code fences, no extra text.
-- Do not explain anything in the response. Do not include comments in the JSON.
+- Do not decide platform.
+- Do not scrape.
+- Do not explain.
+- Output ONLY valid JSON.
 `;
 
-
-
 async function callOpenAI(userMessage) {
-  if (!OPENAI_API_KEY) {
-    throw new Error('OPENAI_API_KEY not set on server.');
-  }
-
   const res = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
     headers: {
       "Authorization": `Bearer ${OPENAI_API_KEY}`,
-      "Content-Type": "application/json",
+      "Content-Type": "application/json"
     },
     body: JSON.stringify({
       model: "gpt-4o-mini",
@@ -55,123 +42,59 @@ async function callOpenAI(userMessage) {
         { role: "user", content: userMessage }
       ],
       temperature: 0
-    }),
+    })
   });
-
-  if (!res.ok) {
-    const txt = await res.text();
-    throw new Error(`OpenAI error ${res.status}: ${txt}`);
-  }
 
   const json = await res.json();
-  const content = json?.choices?.[0]?.message?.content;
-  if (!content) throw new Error('No content from OpenAI');
-  return content;
+  return json.choices[0].message.content;
 }
-
-
-function spawnReconScript(scriptPath, targetDir, logDir) {
-  const resolvedScript = path.resolve(scriptPath);
-  const resolvedTarget = path.resolve(targetDir);
-  const resolvedLogs = path.resolve(logDir);
-
-  // ensure script exists
-  if (!fs.existsSync(resolvedScript)) {
-    throw new Error(`Recon script not found at ${resolvedScript}`);
-  }
-
-  // ensure log directory exists
-  try { fs.mkdirSync(resolvedLogs, { recursive: true }); } catch (e) {}
-
-  const timestamp = new Date().toISOString().replace(/[:.]/g,'-');
-  const stdoutLog = path.join(resolvedLogs, `recon-${timestamp}.out.log`);
-  const stderrLog = path.join(resolvedLogs, `recon-${timestamp}.err.log`);
-
-  // spawn bash with script and pass the target directory as argument (no shell string interpolation)
-  const child = spawn('bash', [resolvedScript, resolvedTarget], {
-    cwd: path.dirname(resolvedScript),
-    detached: false,
-    stdio: ['ignore', 'pipe', 'pipe'],
-  });
-
-  // pipe to files
-  const outStream = fs.createWriteStream(stdoutLog, { flags: 'a' });
-  const errStream = fs.createWriteStream(stderrLog, { flags: 'a' });
-  if (child.stdout) child.stdout.pipe(outStream);
-  if (child.stderr) child.stderr.pipe(errStream);
-
-  child.on('close', (code, signal) => {
-    fs.appendFileSync(stdoutLog, `\n[recon] finished code=${code} signal=${signal}\n`);
-  });
-  child.on('error', (err) => {
-    fs.appendFileSync(stderrLog, `[recon spawn error] ${String(err)}\n`);
-  });
-
-  return {
-    pid: child.pid,
-    stdoutLog,
-    stderrLog,
-  };
-}
-
 export async function POST(req) {
   try {
     const { message } = await req.json();
-    if (!message) return NextResponse.json({ ok: false, error: 'message missing' }, { status: 400 });
-
-    // Ask OpenAI to parse user's intent
-    const aiText = await callOpenAI(message);
-
-    // strip fences just in case and parse
-    const clean = aiText.replace(/```json|```/g, '').trim();
-    let parsed;
-    try {
-      parsed = JSON.parse(clean);
-    } catch (e) {
-      // if assistant returned a code block or extra text, try to find first {...} block
-      const first = clean.match(/\{[\s\S]*\}/);
-      if (first) parsed = JSON.parse(first[0]);
-      else throw new Error('Failed to parse assistant JSON: ' + e.message + ' — raw:' + clean.slice(0,200));
+    if (!message) {
+      return NextResponse.json({ ok: false });
     }
 
-    // handle start_recon for hackerone
-    if (parsed.action === "start_recon" && parsed.platform === "hackerone" && parsed.programUrl) {
-      // download assets (this writes files and returns an object)
-      const result = await fetchHackeroneAssets(parsed.programUrl);
-      let reconInfo = null;
-      try {
-        if (result && result.dir) {
-      
-          const SCRIPT_REL_PATH = path.resolve(process.cwd(), 'hackerone-results', 'Recon.sh');
-          const LOG_ROOT = path.resolve(process.cwd(), 'recon-logs');
+    const aiText = await callOpenAI(message);
+    const clean = aiText.replace(/```json|```/g, "").trim();
+    const parsed = JSON.parse(clean);
 
-          // spawn the script on the program dir
-          reconInfo = spawnReconScript(SCRIPT_REL_PATH, result.dir, LOG_ROOT);
-        }
-      } catch (spawnErr) {
-        // don't fail the whole request if recon spawn fails — return the result plus warning
-        if (!result.warnings) result.warnings = [];
-        result.warnings.push('Recon spawn failed: ' + String(spawnErr));
-      }
-
+    if (parsed.action !== "start_recon") {
       return NextResponse.json({
         ok: true,
-        reply: parsed.confirm || `Started recon for ${parsed.programUrl}`,
-        action: parsed,
-        result,
-        recon: reconInfo
+        reply: parsed.confirm || "Okay."
       });
     }
 
-    // fallback / other actions
+    const targets = Array.isArray(parsed.targets)
+      ? parsed.targets
+          .map(t => t.trim())
+          .filter(t => t.startsWith("http"))
+      : [];
+
+    if (!targets.length) {
+      return NextResponse.json({
+        ok: true,
+        reply: "Please provide valid program URLs (starting with http/https)."
+      });
+    }
+
+    await fetch(new URL("/api/scrape", req.url), {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ input: targets })
+    });
+
     return NextResponse.json({
       ok: true,
-      reply: parsed.confirm || "I need more details.",
-      action: parsed
+      reply: "🛠️ Scope scraping started. Results will appear in output folders."
     });
 
   } catch (err) {
-    console.error('assistant route error', err);
-    return NextResponse.json({ ok: false, error: String(err) }, { status: 500 });
+    console.error(err);
+    return NextResponse.json({
+      ok: false,
+      reply: "Failed to start recon."
+    });
   }
 }

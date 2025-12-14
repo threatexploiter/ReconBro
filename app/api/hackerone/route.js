@@ -24,9 +24,9 @@ function extractProgramNameFromUrl(inputUrl) {
     // Path segments e.g. ['teams','roke_vdp'] or ['roke_vdp']
     const parts = u.pathname.split('/').filter(Boolean);
     if (parts.length === 0) return null;
-    // handle /teams/<program>/assets/...
+   
     if (parts[0] === 'teams' && parts[1]) return sanitizeName(parts[1]);
-    // else first segment is the program
+   
     return sanitizeName(parts[0]);
   } catch (err) {
     return null;
@@ -58,7 +58,7 @@ export async function POST(req) {
 
     await fs.mkdir(programDir, { recursive: true });
 
-    // Construct the possible asset URLs (HackerOne common pattern)
+
     const csvUrl = `https://hackerone.com/teams/${programName}/assets/download_csv.csv`;
     const burpJsonUrl = `https://hackerone.com/teams/${programName}/assets/download_burp_project_file.json`;
 
@@ -70,7 +70,7 @@ export async function POST(req) {
       await downloadToFile(csvUrl, csvPath);
       results.files.scopeCsv = csvPath;
     } catch (errCsv) {
-      // not fatal — record error
+  
       results.files.scopeCsv = null;
       results.warnings = results.warnings || [];
       results.warnings.push(`CSV download failed: ${String(errCsv.message).slice(0,300)}`);
@@ -106,12 +106,12 @@ export async function POST(req) {
       await fs.writeFile(scopeTxtPath, hosts.join('\n') + (hosts.length ? '\n' : ''), 'utf8');
       results.files.scopeTxt = scopeTxtPath;
 
-      // create roots with wildcards (also include base domain)
+    
       const roots = new Set();
       for (const h of hosts) {
         roots.add(h);
         if (!h.startsWith('*.')) roots.add(`*.${h}`);
-        // also try to include base domain: if h is sub.example.com -> example.com
+       
         const parts = h.split('.');
         if (parts.length > 2) {
           const base = parts.slice(-2).join('.');
@@ -124,7 +124,7 @@ export async function POST(req) {
       results.files.roots = rootsPath;
     }
 
-    // write meta file
+
     const meta = {
       programName,
       programUrl,

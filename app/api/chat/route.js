@@ -1,4 +1,3 @@
-// app/api/openai/route.js
 import { NextResponse } from 'next/server';
 
 export async function POST(req) {
@@ -30,7 +29,6 @@ export async function POST(req) {
     }
 
     const data = await resp.json();
-    // extract assistant reply (depends on API response shape)
     const reply = data?.choices?.[0]?.message?.content ?? 'No reply';
 
     return NextResponse.json({ reply });

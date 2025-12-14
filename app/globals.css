@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
+  --background: #991818;
   --foreground: #171717;
 }
 
@@ -128,7 +128,7 @@ body{
 .msg-bot{justify-content:flex-start}
 .msg-bubble{max-width:75%;padding:10px 12px;border-radius:14px;background:#f3f4f6}
 .msg-user .msg-bubble{background:var(--accent);color:white;border-bottom-right-radius:4px}
-.msg-bot .msg-bubble{background:#f3f4f6;border-bottom-left-radius:4px}
+.msg-bot .msg-bubble{background:#506da7;border-bottom-left-radius:4px}
 .msg-text{white-space:pre-wrap}
 
 
@@ -149,7 +149,7 @@ body{
   --accent-2: #7c3aed;
 }
 [data-theme="light"] {
-  --bg: #f5f7fb;
+  --bg: #2e62c9;
   --panel: #ffffff;
   --muted: #6b7280;
   --text: #0f172a;
@@ -176,7 +176,7 @@ body {
   --panel: #0f1724;
   --card-bg: rgba(255,255,255,0.02);
   --muted: #9aa4b2;
-  --text: #e6eef8;
+  --text: #5b5d61;
   --subtle: rgba(255,255,255,0.04);
   --accent: #10b981;
   --accent-2: #7c3aed;
@@ -187,7 +187,7 @@ body {
 
 
 [data-theme="light"] {
-  --bg: #f6f7fb;
+  --bg: #2641ad;
   --panel: #ffffff;
   --card-bg: rgba(15,23,42,0.02);
   --muted: #6b7280;
@@ -404,7 +404,7 @@ body{
   color: var(--text);
 }
 .msg-user .msg-bubble {
-  box-shadow: 0 6px 20px rgba(16,185,129,0.08);
+  box-shadow: 0 6px 20px rgba(22, 185, 131, 0.08);
 }
 
 
