@@ -54,8 +54,9 @@ Each program is stored in an isolated directory under `output/`:
 - make a new .env.local file and put your OPENAI api key in there
 - start the server
 ```
-npm run dev
 npm install
+npx playwright install
+npm run dev
 ```
 - In the ui enter do recon on program_url
 ### note in windows it can only scrape it cannot run recon.sh
@@ -70,8 +71,9 @@ cd ReconBro
 - make a new .env.local file and put your OPENAI api key in there
 - start the server
 ```
-npm run dev
 npm install
+npx playwright install
+npm run dev
 ```
 - In the ui enter do recon on program_url
 - All of the output of scopes will be in the output/ or hackerone-results directory 
