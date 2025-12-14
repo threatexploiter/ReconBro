@@ -1,2 +1,0 @@
-identifier,asset_type,instruction,eligible_for_bounty,eligible_for_submission,availability_requirement,confidentiality_requirement,integrity_requirement,max_severity,system_tags,created_at,updated_at
-Vercel Platform Protection,OTHER,Dedicated app for testing: https://nextjs-cve-hackerone.vercel.app/,true,true,,,,critical,,2025-12-05 22:56:49 UTC,2025-12-05 22:56:49 UTC

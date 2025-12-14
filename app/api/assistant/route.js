@@ -1,31 +1,28 @@
 import { NextResponse } from "next/server";
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+
 const SYSTEM_PROMPT = `
 You are a JSON-only assistant for an automated recon system.
 
-Your role is ONLY to decide whether to start recon.
+Your job is ONLY to extract URLs or domains provided by the user.
 
-Output exactly one JSON object.
+Output exactly ONE JSON object.
 
 Schema:
 {
   "action": "none | start_recon",
-  "targets": ["array of URLs or domains"],
-  "confirm": "short human-friendly confirmation message"
+  "targets": ["array of URLs"],
+  "confirm": "short confirmation message"
 }
 
 Rules:
-- If the user provides one or more URLs or domains, set action = "start_recon" and include them in targets.
-- Accept multiple URLs separated by spaces or newlines.
-- If the user greets, return action = "none" with a greeting.
-- If input is unclear, return action = "none" and ask for clarification.
-
-Important:
-- Do not decide platform.
-- Do not scrape.
-- Do not explain.
-- Output ONLY valid JSON.
+- If the user provides one or more URLs, set action = "start_recon"
+- Extract ALL URLs (space or newline separated)
+- Do NOT scrape
+- Do NOT run recon
+- Do NOT explain
+- Output ONLY valid JSON
 `;
 
 async function callOpenAI(userMessage) {
@@ -48,6 +45,7 @@ async function callOpenAI(userMessage) {
   const json = await res.json();
   return json.choices[0].message.content;
 }
+
 export async function POST(req) {
   try {
     const { message } = await req.json();
@@ -59,42 +57,32 @@ export async function POST(req) {
     const clean = aiText.replace(/```json|```/g, "").trim();
     const parsed = JSON.parse(clean);
 
-    if (parsed.action !== "start_recon") {
+    if (parsed.action !== "start_recon" || !parsed.targets?.length) {
       return NextResponse.json({
         ok: true,
-        reply: parsed.confirm || "Okay."
+        reply: parsed.confirm || "Waiting for targets."
       });
     }
 
-    const targets = Array.isArray(parsed.targets)
-      ? parsed.targets
-          .map(t => t.trim())
-          .filter(t => t.startsWith("http"))
-      : [];
-
-    if (!targets.length) {
-      return NextResponse.json({
-        ok: true,
-        reply: "Please provide valid program URLs (starting with http/https)."
-      });
-    }
-
+    // ✅ CORRECT KEY: targets
     await fetch(new URL("/api/scrape", req.url), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ input: targets })
+      body: JSON.stringify({
+        targets: parsed.targets
+      })
     });
 
     return NextResponse.json({
       ok: true,
-      reply: "🛠️ Scope scraping started. Results will appear in output folders."
+      reply: "Scope scraping started. Results will appear in output folders."
     });
 
   } catch (err) {
     console.error(err);
     return NextResponse.json({
       ok: false,
-      reply: "Failed to start recon."
+      reply: "Failed to start scraping."
     });
   }
 }
