@@ -7,11 +7,14 @@ export async function POST(req) {
   const { type } = await req.json();
 
   let targetDir;
+  let scriptPath;
 
   if (type === "hackerone") {
     targetDir = path.join(process.cwd(), "hackerone-results");
+    scriptPath = path.join(targetDir, "Recon.sh");
   } else {
     targetDir = path.join(process.cwd(), "output");
+    scriptPath = path.join(targetDir, "Recon.sh");
   }
 
   if (!fs.existsSync(targetDir)) {
@@ -21,15 +24,21 @@ export async function POST(req) {
     );
   }
 
-  const script = path.join(process.cwd(), "Recon.sh");
+  if (!fs.existsSync(scriptPath)) {
+    return NextResponse.json(
+      { error: "Recon.sh not found in target directory" },
+      { status: 400 }
+    );
+  }
 
-  spawn("bash", [script, targetDir], {
+  spawn("bash", [scriptPath], {
+    cwd: targetDir,
     stdio: "inherit",
     shell: true
   });
 
   return NextResponse.json({
     success: true,
-    message: `Recon started on ${type} targets`
+    message: `Recon started using ${scriptPath}`
   });
 }

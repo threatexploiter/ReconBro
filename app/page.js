@@ -103,7 +103,7 @@
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ type: "hackerone" })
-    })
+    },alert("RECON STARTED FOR HACKERONE"))
   }
 >
 ▶ Start Recon (HackerOne)
@@ -115,7 +115,7 @@
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ type: "other" })
-    })
+    },alert("RECON STARTED FOR OTHER TARGETS"))
   }
 >
 ▶ Start Recon (Other Targets)
