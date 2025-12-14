@@ -43,6 +43,7 @@ for dir in */; do
   # DOMAIN-BASED recon (subdomain enumeration + verification)
   if [ "$HAS_ROOTS" = true ]; then
     echo "[*] Domain-based recon (roots.txt)"
+    sed 's/^\*\.\?//' wildcards.txt | sort -u > roots.txt
     subfinder -dL roots.txt -all -recursive 2>/dev/null | anew results/all.txt
     chaos -dL roots.txt 2>/dev/null | anew results/chaos.txt
     amass enum -df roots.txt -passive 2>/dev/null | anew results/all.txt || true
