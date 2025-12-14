@@ -64,7 +64,7 @@ export async function POST(req) {
       });
     }
 
-    // ✅ CORRECT KEY: targets
+   
     await fetch(new URL("/api/scrape", req.url), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
