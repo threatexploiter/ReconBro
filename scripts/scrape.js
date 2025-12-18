@@ -1,6 +1,7 @@
 import { scrapeBugcrowdScope } from "../lib/BugcrowdScraper.js";
 import { scrapeIntigritiScope } from "../lib/IntigritiScraper.js";
 import { scrapeYesWeHackScope } from "../lib/YesWeHackScraper.js";
+import { fetchHackeroneAssets } from "../lib/hackerone.js";
 import fs from "fs";
 import path from "path";
 const raw = process.argv[2];
@@ -20,6 +21,9 @@ for (const url of targets) {
     await scrapeIntigritiScope(url);
   } else if (url.includes("yeswehack.com")) {
     await scrapeYesWeHackScope(url);
+  }
+  else if(url.includes("hackerone.com")){
+    await fetchHackeroneAssets(url);
   } else {
     console.error("Unsupported URL:", url);
   }

@@ -1,0 +1,8 @@
+*.affiliates.fanduel.com
+*.fanduel.com
+*.fdbox.net
+*.support.fanduel.com
+affiliates.fanduel.com
+fanduel.com
+fdbox.net
+support.fanduel.com

@@ -1,0 +1,4 @@
+identifier,asset_type,instruction,eligible_for_bounty,eligible_for_submission,availability_requirement,confidentiality_requirement,integrity_requirement,max_severity,system_tags,created_at,updated_at
+affiliates.fanduel.com,URL,"",false,false,high,high,high,critical,,2024-03-29 16:00:47 UTC,2025-12-01 18:41:22 UTC
+support.fanduel.com,URL,"",false,true,high,high,high,critical,,2024-03-29 16:01:14 UTC,2024-03-29 16:01:14 UTC
+*.fdbox.net,WILDCARD,Only Critical or High severity issues will be accepted under this domain. Any performance testing instances are out of scope.,false,true,,,,critical,,2025-11-10 21:00:28 UTC,2025-11-19 01:41:32 UTC

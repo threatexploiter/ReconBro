@@ -102,7 +102,7 @@ export async function POST(req) {
         }
       }
       const hosts = Array.from(hostSet).sort();
-      const scopeTxtPath = path.join(programDir, 'scope.txt');
+      const scopeTxtPath = path.join(programDir, 'urls.txt');
       await fs.writeFile(scopeTxtPath, hosts.join('\n') + (hosts.length ? '\n' : ''), 'utf8');
       results.files.scopeTxt = scopeTxtPath;
 
@@ -119,7 +119,7 @@ export async function POST(req) {
           roots.add(`*.${base}`);
         }
       }
-      const rootsPath = path.join(programDir, 'roots.txt');
+      const rootsPath = path.join(programDir, 'wildcards.txt');
       await fs.writeFile(rootsPath, Array.from(roots).sort().join('\n') + '\n', 'utf8');
       results.files.roots = rootsPath;
     }
